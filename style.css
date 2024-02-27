@@ -70,7 +70,7 @@ body {
   flex-grow: 0;
 }
 
-.bg-yellow {
+.operator {
   background-color: var(--secondary-color);
 }
 
