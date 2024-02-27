@@ -26,12 +26,39 @@ const divide = (firstNum, secondNum) => {
   return firstNum / secondNum;
 };
 
+const updateGlobalVariables = (e) => {
+  if (firstNum && secondNum) {
+    firstNum = Number(display.textContent);
+    operatorSign = e.target.id;
+    console.log(
+      "make the first number to be the result of previous calculation"
+    );
+    secondNum = null
+  } else if (firstNum) {
+    secondNum = Number(display.textContent);
+    console.log(firstNum, secondNum);
+    operatorSign = e.target.id;
+    console.log("do the calculation");
+  } else {
+    firstNum = Number(display.textContent);
+    operatorSign = e.target.id;
+  }
+};
+
 const populateDisplay = (e) => {
   let num = e.target.textContent;
+
+  if (operatorSign) {
+    display.textContent = "";
+    operatorSign = null;
+  }
   if (display.textContent.length === 15) {
-    return
+    return;
   }
   display.textContent += num;
 };
 
 numbers.forEach((number) => number.addEventListener("click", populateDisplay));
+operators.forEach((operator) =>
+  operator.addEventListener("click", updateGlobalVariables)
+);
