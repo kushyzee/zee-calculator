@@ -2,6 +2,7 @@ const display = document.querySelector(".output p");
 const numbers = document.querySelectorAll(".number");
 const operators = document.querySelectorAll(".operator");
 const equals = document.getElementById("equal");
+const clearBtn = document.getElementById("ac");
 
 let firstNum = null;
 let secondNum = null;
@@ -55,9 +56,14 @@ const doCalculation = () => {
 };
 
 const updateGlobalVariables = (e) => {
+  if (operatorSign && firstNum && secondNum) {
+    doCalculation()
+    operatorSign = e.target.id;
+    firstNum = display.textContent;
+    console.log(firstNum, secondNum, operatorSign);
+  }
   operatorSign = e.target.id;
-  display.textContent = '';
-  
+  display.textContent = ''
 };
 
 const populateDisplay = (e) => {
