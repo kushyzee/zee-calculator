@@ -23,9 +23,9 @@ const calculator = {
   },
 
   divide: (firstNum, secondNum) => {
-    if (secondNum == 0) {
-      updateDisplay("Haha, nice try");
-      return;
+    if (secondNum === 0) {
+      // this.secondNumber = '';
+      return 'haha';
     }
     return firstNum / secondNum;
   },
@@ -33,8 +33,7 @@ const calculator = {
 
 const updateOperator = (e) => {
   let { firstNumber, secondNumber, operator } = calculator;
-  firstNumber = Number(firstNumber);
-  secondNumber = Number(secondNumber);
+  if (firstNumber === "") return;
 
   if (firstNumber && secondNumber) {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
@@ -43,15 +42,22 @@ const updateOperator = (e) => {
     updateDisplay(firstNumber);
   } else {
     operator = e.target.id;
-    updateDisplay('');
   }
+
+  if (firstNumber === 'haha') {
+    firstNumber = '';
+    operator = '';
+  }
+
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
   calculator.operator = operator;
 };
 
 const doCalculation = (firstNum, secondNum, operator) => {
-  console.log(firstNum, secondNum, operator);
+  firstNum = Number(firstNum);
+  secondNum = Number(secondNum);
+
   switch (operator) {
     case "add":
       return calculator.add(firstNum, secondNum);
@@ -62,23 +68,47 @@ const doCalculation = (firstNum, secondNum, operator) => {
     case "multiply":
       return calculator.multiply(firstNum, secondNum);
 
-    case 'minus':
+    case "minus":
       return calculator.subtract(firstNum, secondNum);
   }
+};
+
+const updateNumberVar = (e) => {
+  let { firstNumber, secondNumber, operator } = calculator;
+  const number = e.target.textContent;
+
+  if (display.textContent.length === 15) {
+    return;
+  }
+
+  if (e.target.textContent === "." && display.textContent.includes(".")) {
+    return;
+  }
+
+  if (!operator) {
+    firstNumber = firstNumber !== "" ? firstNumber + number : number;
+    updateDisplay(firstNumber);
+  } else {
+    secondNumber = secondNumber !== "" ? secondNumber + number : number;
+    updateDisplay(secondNumber);
+  }
+
+  calculator.firstNumber = firstNumber;
+  calculator.secondNumber = secondNumber;
 };
 
 const deleteCharacter = () => {
   let { firstNumber, secondNumber, operator } = calculator;
 
   if (!operator) {
-    if (firstNumber) {
+    if (firstNumber !== "") {
       firstNumber = firstNumber.slice(0, -1);
-      updateDisplay(firstNumber || 0);
+      updateDisplay(firstNumber);
     }
   } else {
-    if (secondNumber) {
+    if (secondNumber !== "") {
       secondNumber = secondNumber.slice(0, -1);
-      updateDisplay(secondNumber || 0);
+      updateDisplay(secondNumber);
     }
   }
 
@@ -97,29 +127,6 @@ const updateDisplay = (num) => {
   display.textContent = num;
 };
 
-const updateNumberVar = (e) => {
-  let { firstNumber, secondNumber, operator } = calculator;
-  const number = e.target.textContent;
-
-  if (display.textContent.length === 15) {
-    return;
-  }
-
-  if (e.target.textContent === "." && display.textContent.includes(".")) {
-    return;
-  }
-
-  if (!operator) {
-    firstNumber = firstNumber ? firstNumber + number : number;
-    updateDisplay(firstNumber);
-  } else {
-    secondNumber = secondNumber ? secondNumber + number : number;
-    updateDisplay(secondNumber);
-  }
-
-  calculator.firstNumber = firstNumber;
-  calculator.secondNumber = secondNumber;
-};
 
 numbers.forEach((number) => {
   number.addEventListener("click", updateNumberVar);
@@ -131,4 +138,4 @@ operators.forEach((operator) => {
 
 clearBtn.addEventListener("click", clearDisplay);
 deleteBtn.addEventListener("click", deleteCharacter);
-updateDisplay("0");
+// updateDisplay("0");
