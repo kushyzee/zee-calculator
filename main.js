@@ -24,8 +24,7 @@ const calculator = {
 
   divide: (firstNum, secondNum) => {
     if (secondNum === 0) {
-      // this.secondNumber = '';
-      return 'haha';
+      return "haha";
     }
     return firstNum / secondNum;
   },
@@ -44,9 +43,9 @@ const updateOperator = (e) => {
     operator = e.target.id;
   }
 
-  if (firstNumber === 'haha') {
-    firstNumber = '';
-    operator = '';
+  if (firstNumber === "haha") {
+    firstNumber = "";
+    operator = "";
   }
 
   calculator.firstNumber = firstNumber;
@@ -71,6 +70,19 @@ const doCalculation = (firstNum, secondNum, operator) => {
     case "minus":
       return calculator.subtract(firstNum, secondNum);
   }
+};
+
+const preCalculation = () => {
+  let { firstNumber, secondNumber, operator } = calculator;
+  if (firstNumber !== "" && (secondNumber !== "") & (operator !== "")) {
+    firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    secondNumber = "";
+    operator = "";
+    updateDisplay(firstNumber);
+  }
+  calculator.firstNumber = firstNumber;
+  calculator.secondNumber = secondNumber;
+  calculator.operator = operator;
 };
 
 const updateNumberVar = (e) => {
@@ -117,16 +129,15 @@ const deleteCharacter = () => {
 };
 
 const clearDisplay = () => {
+  display.textContent = "";
   calculator.firstNumber = "";
   calculator.secondNumber = "";
   calculator.operator = "";
-  display.textContent = "0";
 };
 
 const updateDisplay = (num) => {
   display.textContent = num;
 };
-
 
 numbers.forEach((number) => {
   number.addEventListener("click", updateNumberVar);
@@ -138,4 +149,4 @@ operators.forEach((operator) => {
 
 clearBtn.addEventListener("click", clearDisplay);
 deleteBtn.addEventListener("click", deleteCharacter);
-// updateDisplay("0");
+equals.addEventListener("click", preCalculation);
