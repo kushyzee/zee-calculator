@@ -5,14 +5,11 @@ const equals = document.getElementById("equal");
 const clearBtn = document.getElementById("ac");
 const deleteBtn = document.getElementById("del");
 
-const calcVars = {
+const calculator = {
   firstNumber: "",
   secondNumber: "",
   operator: "",
-};
 
-const calculator = {
-  
   add: (firstNum, secondNum) => {
     return firstNum + secondNum;
   },
@@ -35,7 +32,7 @@ const calculator = {
 };
 
 const updateOperator = (e) => {
-  let { firstNumber, secondNumber, operator } = calcVars;
+  let { firstNumber, secondNumber, operator } = calculator;
   firstNumber = Number(firstNumber);
   secondNumber = Number(secondNumber);
 
@@ -46,11 +43,11 @@ const updateOperator = (e) => {
     updateDisplay(firstNumber);
   } else {
     operator = e.target.id;
-    updateDisplay(e.target.textContent);
+    updateDisplay('');
   }
-  calcVars.firstNumber = firstNumber;
-  calcVars.secondNumber = secondNumber;
-  calcVars.operator = operator;
+  calculator.firstNumber = firstNumber;
+  calculator.secondNumber = secondNumber;
+  calculator.operator = operator;
 };
 
 const doCalculation = (firstNum, secondNum, operator) => {
@@ -71,7 +68,7 @@ const doCalculation = (firstNum, secondNum, operator) => {
 };
 
 const deleteCharacter = () => {
-  let { firstNumber, secondNumber, operator } = calcVars;
+  let { firstNumber, secondNumber, operator } = calculator;
 
   if (!operator) {
     if (firstNumber) {
@@ -85,14 +82,14 @@ const deleteCharacter = () => {
     }
   }
 
-  calcVars.firstNumber = firstNumber;
-  calcVars.secondNumber = secondNumber;
+  calculator.firstNumber = firstNumber;
+  calculator.secondNumber = secondNumber;
 };
 
 const clearDisplay = () => {
-  calcVars.firstNumber = "";
-  calcVars.secondNumber = "";
-  calcVars.operator = "";
+  calculator.firstNumber = "";
+  calculator.secondNumber = "";
+  calculator.operator = "";
   display.textContent = "0";
 };
 
@@ -101,7 +98,7 @@ const updateDisplay = (num) => {
 };
 
 const updateNumberVar = (e) => {
-  let { firstNumber, secondNumber, operator } = calcVars;
+  let { firstNumber, secondNumber, operator } = calculator;
   const number = e.target.textContent;
 
   if (display.textContent.length === 15) {
@@ -120,8 +117,8 @@ const updateNumberVar = (e) => {
     updateDisplay(secondNumber);
   }
 
-  calcVars.firstNumber = firstNumber;
-  calcVars.secondNumber = secondNumber;
+  calculator.firstNumber = firstNumber;
+  calculator.secondNumber = secondNumber;
 };
 
 numbers.forEach((number) => {
