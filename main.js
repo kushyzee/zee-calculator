@@ -80,6 +80,12 @@ const preCalculation = () => {
     operator = "";
     updateDisplay(firstNumber);
   }
+
+  if (firstNumber === "haha") {
+    firstNumber = "";
+    operator = "";
+  }
+  
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
   calculator.operator = operator;
