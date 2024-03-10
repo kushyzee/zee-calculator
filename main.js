@@ -6,12 +6,13 @@ const clearBtn = document.getElementById("ac");
 const deleteBtn = document.getElementById("del");
 
 const calcVars = {
-  firstNumber: '',
-  secondNumber: '',
-  operator: '',
+  firstNumber: "",
+  secondNumber: "",
+  operator: "",
 };
 
 const calculator = {
+  
   add: (firstNum, secondNum) => {
     return firstNum + secondNum;
   },
@@ -25,23 +26,48 @@ const calculator = {
   },
 
   divide: (firstNum, secondNum) => {
-    if (secondNum === 0) {
-      display.textContent = "Haha, nice try";
+    if (secondNum == 0) {
+      updateDisplay("Haha, nice try");
       return;
     }
     return firstNum / secondNum;
   },
 };
 
-const updateOperator = () => {
-  console.log(calcVars.firstNumber);
+const updateOperator = (e) => {
+  let { firstNumber, secondNumber, operator } = calcVars;
+  firstNumber = Number(firstNumber);
+  secondNumber = Number(secondNumber);
+
+  if (firstNumber && secondNumber) {
+    firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    secondNumber = "";
+    operator = e.target.id;
+    updateDisplay(firstNumber);
+  } else {
+    operator = e.target.id;
+    updateDisplay(e.target.textContent);
+  }
+  calcVars.firstNumber = firstNumber;
+  calcVars.secondNumber = secondNumber;
+  calcVars.operator = operator;
 };
 
-const clearDisplay = () => {
-  calcVars.firstNumber = '';
-  calcVars.secondNumber = '';
-  calcVars.operator = '';
-  display.textContent = "0";
+const doCalculation = (firstNum, secondNum, operator) => {
+  console.log(firstNum, secondNum, operator);
+  switch (operator) {
+    case "add":
+      return calculator.add(firstNum, secondNum);
+
+    case "division":
+      return calculator.divide(firstNum, secondNum);
+
+    case "multiply":
+      return calculator.multiply(firstNum, secondNum);
+
+    case 'minus':
+      return calculator.subtract(firstNum, secondNum);
+  }
 };
 
 const deleteCharacter = () => {
@@ -50,25 +76,27 @@ const deleteCharacter = () => {
   if (!operator) {
     if (firstNumber) {
       firstNumber = firstNumber.slice(0, -1);
-      updateDisplay(firstNumber);
+      updateDisplay(firstNumber || 0);
     }
   } else {
     if (secondNumber) {
       secondNumber = secondNumber.slice(0, -1);
-      updateDisplay(secondNumber);
+      updateDisplay(secondNumber || 0);
     }
   }
 
   calcVars.firstNumber = firstNumber;
   calcVars.secondNumber = secondNumber;
-  console.log(calcVars.firstNumber, calcVars.secondNumber);
+};
+
+const clearDisplay = () => {
+  calcVars.firstNumber = "";
+  calcVars.secondNumber = "";
+  calcVars.operator = "";
+  display.textContent = "0";
 };
 
 const updateDisplay = (num) => {
-  if (display.textContent.length === 15) {
-    return;
-  }
-
   display.textContent = num;
 };
 
@@ -76,12 +104,15 @@ const updateNumberVar = (e) => {
   let { firstNumber, secondNumber, operator } = calcVars;
   const number = e.target.textContent;
 
+  if (display.textContent.length === 15) {
+    return;
+  }
+
   if (e.target.textContent === "." && display.textContent.includes(".")) {
     return;
   }
 
   if (!operator) {
-    firstNumber;
     firstNumber = firstNumber ? firstNumber + number : number;
     updateDisplay(firstNumber);
   } else {
@@ -103,4 +134,4 @@ operators.forEach((operator) => {
 
 clearBtn.addEventListener("click", clearDisplay);
 deleteBtn.addEventListener("click", deleteCharacter);
-updateDisplay('0');
+updateDisplay("0");
