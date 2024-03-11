@@ -44,8 +44,8 @@ const updateOperator = (e) => {
   e.target.style.backgroundColor = "#de7a07";
   calculator.currentOperatorBtn = e.target;
 
-  if (firstNumber && secondNumber) {
-    firstNumber = doCalculation(firstNumber, secondNumber, operator);
+  if (firstNumber && secondNumber) { 
+    firstNumber = roundNumber(doCalculation(firstNumber, secondNumber, operator), 13);
     secondNumber = "";
     operator = e.target.id;
     updateDisplay(firstNumber);
@@ -93,7 +93,7 @@ const equalsClicked = () => {
   }
 
   if (firstNumber !== "" && (secondNumber !== "") & (operator !== "")) {
-    firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    firstNumber = roundNumber(doCalculation(firstNumber, secondNumber, operator), 13);
     secondNumber = "";
     operator = "";
     updateDisplay(firstNumber);
@@ -122,10 +122,10 @@ const updateNumberVar = (e) => {
     return;
   }
 
-  if (e.target.textContent === '.' && firstNumber === '') {
+  if (e.target.textContent === '.' && firstNumber === '' && display.textContent === '') {
     calculator.firstNumber = '0.'
     updateDisplay(calculator.firstNumber)
-  } else if (e.target.textContent === '.' && secondNumber === '') {
+  } else if (e.target.textContent === '.' && secondNumber === '' && !firstNumber) {
     calculator.secondNumber = '0.'
     updateDisplay(calculator.secondNumber)
   }
@@ -134,6 +134,7 @@ const updateNumberVar = (e) => {
     return;
   }
 
+  console.log(firstNumber, secondNumber);
   if (!operator) {
     firstNumber = firstNumber !== "" ? firstNumber + number : number;
     updateDisplay(firstNumber);
@@ -185,6 +186,11 @@ const clearDisplay = () => {
 const updateDisplay = (num) => {
   display.textContent = num;
 };
+
+const roundNumber = (num, points) => {
+  const factor = Math.pow(10, points)
+  return Math.round(num * factor) / factor
+}
 
 const backgroundColorChanger = (color, button) => {
   button.style.backgroundColor = color;
