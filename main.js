@@ -9,6 +9,8 @@ const calculator = {
   firstNumber: "",
   secondNumber: "",
   operator: "",
+  currentOperatorBtn: "",
+  resultUpdated: false,
 
   add: (firstNum, secondNum) => {
     return firstNum + secondNum;
@@ -32,7 +34,15 @@ const calculator = {
 
 const updateOperator = (e) => {
   let { firstNumber, secondNumber, operator } = calculator;
+
   if (firstNumber === "") return;
+
+  if (calculator.currentOperatorBtn) {
+    calculator.currentOperatorBtn.style.backgroundColor = "";
+  }
+
+  e.target.style.backgroundColor = "#de7a07";
+  calculator.currentOperatorBtn = e.target;
 
   if (firstNumber && secondNumber) {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
@@ -72,20 +82,31 @@ const doCalculation = (firstNum, secondNum, operator) => {
   }
 };
 
-const preCalculation = () => {
+const equalsClicked = () => {
   let { firstNumber, secondNumber, operator } = calculator;
+
+  backgroundColorChanger("#2525be", equals);
+
+  if (calculator.currentOperatorBtn) {
+    calculator.currentOperatorBtn.style.backgroundColor = "";
+    calculator.currentOperatorBtn = "";
+  }
+
   if (firstNumber !== "" && (secondNumber !== "") & (operator !== "")) {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
     secondNumber = "";
     operator = "";
     updateDisplay(firstNumber);
+  } else {
+    firstNumber = "";
+    operator = "";
   }
 
   if (firstNumber === "haha") {
     firstNumber = "";
     operator = "";
   }
-  
+
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
   calculator.operator = operator;
@@ -95,8 +116,18 @@ const updateNumberVar = (e) => {
   let { firstNumber, secondNumber, operator } = calculator;
   const number = e.target.textContent;
 
+  backgroundColorChanger("#333333", e.target);
+
   if (display.textContent.length === 15) {
     return;
+  }
+
+  if (e.target.textContent === '.' && firstNumber === '') {
+    calculator.firstNumber = '0.'
+    updateDisplay(calculator.firstNumber)
+  } else if (e.target.textContent === '.' && secondNumber === '') {
+    calculator.secondNumber = '0.'
+    updateDisplay(calculator.secondNumber)
   }
 
   if (e.target.textContent === "." && display.textContent.includes(".")) {
@@ -118,6 +149,9 @@ const updateNumberVar = (e) => {
 const deleteCharacter = () => {
   let { firstNumber, secondNumber, operator } = calculator;
 
+  backgroundColorChanger("#333333", deleteBtn)
+
+
   if (!operator) {
     if (firstNumber !== "") {
       firstNumber = firstNumber.slice(0, -1);
@@ -135,6 +169,13 @@ const deleteCharacter = () => {
 };
 
 const clearDisplay = () => {
+  if (calculator.currentOperatorBtn) {
+    calculator.currentOperatorBtn.style.backgroundColor = "";
+    calculator.currentOperatorBtn = "";
+  }
+
+  backgroundColorChanger("#333333", clearBtn)
+
   display.textContent = "";
   calculator.firstNumber = "";
   calculator.secondNumber = "";
@@ -143,6 +184,13 @@ const clearDisplay = () => {
 
 const updateDisplay = (num) => {
   display.textContent = num;
+};
+
+const backgroundColorChanger = (color, button) => {
+  button.style.backgroundColor = color;
+  setTimeout(() => {
+    button.style.backgroundColor = "";
+  }, 200);
 };
 
 numbers.forEach((number) => {
@@ -155,4 +203,4 @@ operators.forEach((operator) => {
 
 clearBtn.addEventListener("click", clearDisplay);
 deleteBtn.addEventListener("click", deleteCharacter);
-equals.addEventListener("click", preCalculation);
+equals.addEventListener("click", equalsClicked);
