@@ -4,6 +4,7 @@ const operators = Array.from(document.querySelectorAll(".operator"));
 const equals = document.getElementById("equal");
 const clearBtn = document.getElementById("ac");
 const deleteBtn = document.getElementById("del");
+const plusMinusBtn = document.getElementById("plus-minus");
 
 const calculator = {
   firstNumber: "",
@@ -34,9 +35,9 @@ const calculator = {
 };
 
 const updateOperator = (e) => {
-  let { firstNumber, secondNumber, operator } = calculator;
+  let { firstNumber, secondNumber, operator, currentInput } = calculator;
 
-  if (firstNumber === "") return;
+  if (currentInput === "") return;
 
   if (calculator.currentOperatorBtn) {
     calculator.currentOperatorBtn.style.backgroundColor = "";
@@ -45,14 +46,17 @@ const updateOperator = (e) => {
   e.target.style.backgroundColor = "#de7a07";
   calculator.currentOperatorBtn = e.target;
 
-  if (firstNumber && secondNumber) {
+  if (firstNumber !== '' && secondNumber !== '') {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
     calculator.result = true;
-    secondNumber = "";
-    operator = e.target.id;
-  } else {
-    operator = e.target.id;
+  } else if (firstNumber === '') {
+    firstNumber = currentInput;
+  } else if (secondNumber === '') {
+    secondNumber = currentInput;
   }
+  
+  operator = e.target.id;
+  console.log(firstNumber, secondNumber);
 
   if (firstNumber === "haha") {
     updateDisplay(firstNumber);
@@ -89,7 +93,7 @@ const doCalculation = (firstNum, secondNum, operator) => {
 };
 
 const equalsClicked = () => {
-  let { firstNumber, secondNumber, operator } = calculator;
+  let { firstNumber, secondNumber, operator, currentInput } = calculator;
 
   backgroundColorChanger("#2525be", equals);
 
@@ -98,13 +102,15 @@ const equalsClicked = () => {
     calculator.currentOperatorBtn = "";
   }
 
-  if (firstNumber !== "" && (secondNumber !== "") & (operator !== "")) {
+  if (firstNumber !== "" && currentInput !== "" && operator !== "") {
+    secondNumber = currentInput;
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
     calculator.result = true;
     secondNumber = "";
     operator = "";
   } else {
     firstNumber = "";
+    currentInput = ""
     operator = "";
   }
 
@@ -120,7 +126,8 @@ const equalsClicked = () => {
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
   calculator.operator = operator;
-  calculator.currentInput = "";
+  // calculator.currentInput = "";
+  console.log(calculator.firstNumber);
 };
 
 const updateNumberVar = (e) => {
@@ -138,9 +145,8 @@ const updateNumberVar = (e) => {
   }
 
   if (calculator.result) {
-    firstNumber = "";
-    secondNumber = "";
-    operator = "";
+    currentInput = ''
+    // operator = "";
     calculator.result = false;
 
     if (number === ".") {
@@ -160,17 +166,19 @@ const updateNumberVar = (e) => {
 
   updateDisplay(currentInput);
 
-  if (!operator) {
-    firstNumber = firstNumber !== "" ? firstNumber + number : number;
-  } else {
-    secondNumber = secondNumber !== "" ? secondNumber + number : number;
-    // updateDisplay(secondNumber);
-  }
-
   calculator.currentInput = currentInput;
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
 };
+
+const negativeClick = () => {
+  if (calculator.currentInput !== '') {
+    const value = Number(calculator.currentInput);
+    const negative = -value;
+    calculator.currentInput = negative.toString();
+    updateDisplay(calculator.currentInput)
+  }
+}
 
 const deleteCharacter = () => {
   let { firstNumber, secondNumber, operator, currentInput } = calculator;
@@ -238,3 +246,4 @@ operators.forEach((operator) => {
 clearBtn.addEventListener("click", clearDisplay);
 deleteBtn.addEventListener("click", deleteCharacter);
 equals.addEventListener("click", equalsClicked);
+plusMinusBtn.addEventListener('click', negativeClick)
