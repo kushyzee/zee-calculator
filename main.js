@@ -37,7 +37,7 @@ const calculator = {
 const updateOperator = (e) => {
   let { firstNumber, secondNumber, operator, currentInput } = calculator;
 
-  if (currentInput === "") return;
+  if (currentInput === "") return; 
 
   if (calculator.currentOperatorBtn) {
     calculator.currentOperatorBtn.style.backgroundColor = "";
@@ -46,6 +46,7 @@ const updateOperator = (e) => {
   e.target.style.backgroundColor = "#de7a07";
   calculator.currentOperatorBtn = e.target;
 
+  // do previous calculation if firstNumber and secondNumber have values
   if (firstNumber !== "" && secondNumber !== "") {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
     calculator.result = true;
@@ -53,6 +54,7 @@ const updateOperator = (e) => {
     firstNumber = currentInput;
   } else if (secondNumber === "") {
     secondNumber = currentInput;
+    firstNumber = doCalculation(firstNumber, secondNumber, operator);
   } 
   
   if (calculator.result) {
@@ -131,8 +133,8 @@ const equalsClicked = () => {
   calculator.operator = operator;
 };
 
-const updateNumberVar = (e) => {
-  let { firstNumber, secondNumber, operator, currentInput } = calculator;
+const updateCurrentInput = (e) => {
+  let { firstNumber, secondNumber, currentInput } = calculator;
   const number = e.target.textContent;
 
   backgroundColorChanger("#333333", e.target);
@@ -141,10 +143,12 @@ const updateNumberVar = (e) => {
     return;
   }
 
+  // make sure only one decimal point is used
   if (number === "." && currentInput.includes(".")) {
     return;
   }
 
+  // reset calculator if a result is gotten and number buttons are pressed
   if (calculator.result) {
     currentInput = "";
     operator = "";
@@ -175,9 +179,18 @@ const updateNumberVar = (e) => {
 };
 
 const negativeClick = () => {
-  if (calculator.currentInput !== "") {
-    const value = Number(calculator.currentInput);
-    const negative = -value;
+  let value = ''
+  let negative = ''
+
+  // if there is a result, toggle its sign
+  if (calculator.result) {
+    value = Number(calculator.firstNumber);
+    negative = -value;
+    calculator.firstNumber = negative.toString()
+    updateDisplay(calculator.firstNumber)
+  } else if (calculator.currentInput !== "") {
+    value = Number(calculator.currentInput);
+    negative = -value;
     calculator.currentInput = negative.toString();
     updateDisplay(calculator.currentInput);
   }
@@ -239,7 +252,7 @@ const backgroundColorChanger = (color, button) => {
 };
 
 numbers.forEach((number) => {
-  number.addEventListener("click", updateNumberVar);
+  number.addEventListener("click", updateCurrentInput);
 });
 
 operators.forEach((operator) => {
