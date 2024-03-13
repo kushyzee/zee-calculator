@@ -10,8 +10,8 @@ const calculator = {
   secondNumber: "",
   operator: "",
   currentInput: "",
+  result: false,
   currentOperatorBtn: "",
-  resultUpdated: false,
 
   add: (firstNum, secondNum) => {
     return firstNum + secondNum;
@@ -47,6 +47,7 @@ const updateOperator = (e) => {
 
   if (firstNumber && secondNumber) {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    calculator.result = true;
     secondNumber = "";
     operator = e.target.id;
   } else {
@@ -99,6 +100,7 @@ const equalsClicked = () => {
 
   if (firstNumber !== "" && (secondNumber !== "") & (operator !== "")) {
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    calculator.result = true;
     secondNumber = "";
     operator = "";
   } else {
@@ -135,7 +137,18 @@ const updateNumberVar = (e) => {
     return;
   }
 
-  if (number === ".") {
+  if (calculator.result) {
+    firstNumber = "";
+    secondNumber = "";
+    operator = "";
+    calculator.result = false;
+
+    if (number === ".") {
+      currentInput = "0.";
+    } else {
+      currentInput = number;
+    }
+  } else if (number === ".") {
     if (currentInput === "") {
       currentInput = "0.";
     } else if (!currentInput.includes(".")) {
@@ -146,7 +159,6 @@ const updateNumberVar = (e) => {
   }
 
   updateDisplay(currentInput);
-  // console.log(currentInput);
 
   if (!operator) {
     firstNumber = firstNumber !== "" ? firstNumber + number : number;
@@ -155,7 +167,6 @@ const updateNumberVar = (e) => {
     // updateDisplay(secondNumber);
   }
 
-  console.log(calculator.currentInput);
   calculator.currentInput = currentInput;
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
@@ -169,13 +180,13 @@ const deleteCharacter = () => {
   if (!operator) {
     if (firstNumber !== "") {
       firstNumber = firstNumber.slice(0, -1);
-      currentInput = currentInput.slice(0, -1)
+      currentInput = currentInput.slice(0, -1);
       updateDisplay(firstNumber);
     }
   } else {
     if (secondNumber !== "") {
       secondNumber = secondNumber.slice(0, -1);
-      currentInput = currentInput.slice(0, -1)
+      currentInput = currentInput.slice(0, -1);
       updateDisplay(secondNumber);
     }
   }
