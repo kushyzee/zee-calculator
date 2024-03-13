@@ -9,6 +9,7 @@ const calculator = {
   firstNumber: "",
   secondNumber: "",
   operator: "",
+  currentInput: "",
   currentOperatorBtn: "",
   resultUpdated: false,
 
@@ -25,7 +26,7 @@ const calculator = {
   },
 
   divide: (firstNum, secondNum) => {
-    if (secondNum === 0) {
+    if (secondNum == 0) {
       return "haha";
     }
     return firstNum / secondNum;
@@ -44,23 +45,27 @@ const updateOperator = (e) => {
   e.target.style.backgroundColor = "#de7a07";
   calculator.currentOperatorBtn = e.target;
 
-  if (firstNumber && secondNumber) { 
-    firstNumber = roundNumber(doCalculation(firstNumber, secondNumber, operator), 13);
+  if (firstNumber && secondNumber) {
+    firstNumber = doCalculation(firstNumber, secondNumber, operator);
     secondNumber = "";
     operator = e.target.id;
-    updateDisplay(firstNumber);
   } else {
     operator = e.target.id;
   }
 
   if (firstNumber === "haha") {
+    updateDisplay(firstNumber);
     firstNumber = "";
     operator = "";
+  } else {
+    firstNumber = roundNumber(firstNumber, 13);
+    updateDisplay(firstNumber);
   }
 
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
   calculator.operator = operator;
+  calculator.currentInput = "";
 };
 
 const doCalculation = (firstNum, secondNum, operator) => {
@@ -93,27 +98,31 @@ const equalsClicked = () => {
   }
 
   if (firstNumber !== "" && (secondNumber !== "") & (operator !== "")) {
-    firstNumber = roundNumber(doCalculation(firstNumber, secondNumber, operator), 13);
+    firstNumber = doCalculation(firstNumber, secondNumber, operator);
     secondNumber = "";
     operator = "";
-    updateDisplay(firstNumber);
   } else {
     firstNumber = "";
     operator = "";
   }
 
   if (firstNumber === "haha") {
+    updateDisplay(firstNumber);
     firstNumber = "";
     operator = "";
+  } else {
+    firstNumber = roundNumber(firstNumber, 13);
+    updateDisplay(firstNumber);
   }
 
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
   calculator.operator = operator;
+  calculator.currentInput = "";
 };
 
 const updateNumberVar = (e) => {
-  let { firstNumber, secondNumber, operator } = calculator;
+  let { firstNumber, secondNumber, operator, currentInput } = calculator;
   const number = e.target.textContent;
 
   backgroundColorChanger("#333333", e.target);
@@ -122,51 +131,58 @@ const updateNumberVar = (e) => {
     return;
   }
 
-  if (e.target.textContent === '.' && firstNumber === '' && display.textContent === '') {
-    calculator.firstNumber = '0.'
-    updateDisplay(calculator.firstNumber)
-  } else if (e.target.textContent === '.' && secondNumber === '' && !firstNumber) {
-    calculator.secondNumber = '0.'
-    updateDisplay(calculator.secondNumber)
-  }
-
-  if (e.target.textContent === "." && display.textContent.includes(".")) {
+  if (number === "." && currentInput.includes(".")) {
     return;
   }
 
-  console.log(firstNumber, secondNumber);
-  if (!operator) {
-    firstNumber = firstNumber !== "" ? firstNumber + number : number;
-    updateDisplay(firstNumber);
+  if (number === ".") {
+    if (currentInput === "") {
+      currentInput = "0.";
+    } else if (!currentInput.includes(".")) {
+      currentInput += number;
+    }
   } else {
-    secondNumber = secondNumber !== "" ? secondNumber + number : number;
-    updateDisplay(secondNumber);
+    currentInput = currentInput === "" ? number : currentInput + number;
   }
 
+  updateDisplay(currentInput);
+  // console.log(currentInput);
+
+  if (!operator) {
+    firstNumber = firstNumber !== "" ? firstNumber + number : number;
+  } else {
+    secondNumber = secondNumber !== "" ? secondNumber + number : number;
+    // updateDisplay(secondNumber);
+  }
+
+  console.log(calculator.currentInput);
+  calculator.currentInput = currentInput;
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
 };
 
 const deleteCharacter = () => {
-  let { firstNumber, secondNumber, operator } = calculator;
+  let { firstNumber, secondNumber, operator, currentInput } = calculator;
 
-  backgroundColorChanger("#333333", deleteBtn)
-
+  backgroundColorChanger("#333333", deleteBtn);
 
   if (!operator) {
     if (firstNumber !== "") {
       firstNumber = firstNumber.slice(0, -1);
+      currentInput = currentInput.slice(0, -1)
       updateDisplay(firstNumber);
     }
   } else {
     if (secondNumber !== "") {
       secondNumber = secondNumber.slice(0, -1);
+      currentInput = currentInput.slice(0, -1)
       updateDisplay(secondNumber);
     }
   }
 
   calculator.firstNumber = firstNumber;
   calculator.secondNumber = secondNumber;
+  calculator.currentInput = currentInput;
 };
 
 const clearDisplay = () => {
@@ -175,12 +191,13 @@ const clearDisplay = () => {
     calculator.currentOperatorBtn = "";
   }
 
-  backgroundColorChanger("#333333", clearBtn)
+  backgroundColorChanger("#333333", clearBtn);
 
   display.textContent = "";
   calculator.firstNumber = "";
   calculator.secondNumber = "";
   calculator.operator = "";
+  calculator.currentInput = "";
 };
 
 const updateDisplay = (num) => {
@@ -188,9 +205,9 @@ const updateDisplay = (num) => {
 };
 
 const roundNumber = (num, points) => {
-  const factor = Math.pow(10, points)
-  return Math.round(num * factor) / factor
-}
+  const factor = Math.pow(10, points);
+  return Math.round(num * factor) / factor;
+};
 
 const backgroundColorChanger = (color, button) => {
   button.style.backgroundColor = color;
