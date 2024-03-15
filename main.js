@@ -37,7 +37,7 @@ const calculator = {
 const updateOperator = (e) => {
   let { firstNumber, secondNumber, operator, currentInput } = calculator;
 
-  if (currentInput === "") return; 
+  if (currentInput === "" && !calculator.result) return;
 
   if (calculator.currentOperatorBtn) {
     calculator.currentOperatorBtn.style.backgroundColor = "";
@@ -46,19 +46,14 @@ const updateOperator = (e) => {
   e.target.style.backgroundColor = "#de7a07";
   calculator.currentOperatorBtn = e.target;
 
-  // do previous calculation if firstNumber and secondNumber have values
-  if (firstNumber !== "" && secondNumber !== "") {
-    firstNumber = doCalculation(firstNumber, secondNumber, operator);
-    calculator.result = true;
+  if (calculator.result) {
+    operator = e.target.id;
+    calculator.result = false;
   } else if (firstNumber === "") {
     firstNumber = currentInput;
   } else if (secondNumber === "") {
     secondNumber = currentInput;
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
-  } 
-  
-  if (calculator.result) {
-    calculator.result = false
   }
 
   operator = e.target.id;
@@ -73,7 +68,7 @@ const updateOperator = (e) => {
   }
 
   calculator.firstNumber = firstNumber;
-  calculator.secondNumber = secondNumber;
+  calculator.secondNumber = "";
   calculator.operator = operator;
   calculator.currentInput = "";
 };
@@ -111,7 +106,6 @@ const equalsClicked = () => {
     secondNumber = currentInput;
     firstNumber = doCalculation(firstNumber, secondNumber, operator);
     calculator.result = true;
-    secondNumber = "";
     operator = "";
   } else {
     firstNumber = "";
@@ -126,10 +120,12 @@ const equalsClicked = () => {
   } else if (currentInput !== "") {
     firstNumber = roundNumber(firstNumber, 13);
     updateDisplay(firstNumber);
+    currentInput = "";
   }
 
   calculator.firstNumber = firstNumber;
-  calculator.secondNumber = secondNumber;
+  calculator.secondNumber = "";
+  calculator.currentInput = currentInput;
   calculator.operator = operator;
 };
 
@@ -152,8 +148,8 @@ const updateCurrentInput = (e) => {
   if (calculator.result) {
     currentInput = "";
     operator = "";
-    firstNumber = ''
-    secondNumber = ''
+    firstNumber = "";
+    secondNumber = "";
     calculator.result = false;
 
     if (number === ".") {
@@ -179,15 +175,15 @@ const updateCurrentInput = (e) => {
 };
 
 const negativeClick = () => {
-  let value = ''
-  let negative = ''
+  let value = "";
+  let negative = "";
 
   // if there is a result, toggle its sign
   if (calculator.result) {
     value = Number(calculator.firstNumber);
     negative = -value;
-    calculator.firstNumber = negative.toString()
-    updateDisplay(calculator.firstNumber)
+    calculator.firstNumber = negative.toString();
+    updateDisplay(calculator.firstNumber);
   } else if (calculator.currentInput !== "") {
     value = Number(calculator.currentInput);
     negative = -value;
@@ -197,26 +193,19 @@ const negativeClick = () => {
 };
 
 const deleteCharacter = () => {
-  let { firstNumber, secondNumber, operator, currentInput } = calculator;
+  let { firstNumber, currentInput, result } = calculator;
 
   backgroundColorChanger("#333333", deleteBtn);
 
-  if (!operator) {
-    if (firstNumber !== "") {
-      firstNumber = firstNumber.slice(0, -1);
-      currentInput = currentInput.slice(0, -1);
-      updateDisplay(firstNumber);
-    }
-  } else {
-    if (secondNumber !== "") {
-      secondNumber = secondNumber.slice(0, -1);
-      currentInput = currentInput.slice(0, -1);
-      updateDisplay(secondNumber);
-    }
+  if (currentInput !== "") {
+    currentInput = currentInput.slice(0, -1);
+    updateDisplay(currentInput);
+  } else if (result || firstNumber) {
+    firstNumber = firstNumber.toString().slice(0, -1);
+    updateDisplay(firstNumber);
   }
 
   calculator.firstNumber = firstNumber;
-  calculator.secondNumber = secondNumber;
   calculator.currentInput = currentInput;
 };
 
