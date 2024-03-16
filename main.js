@@ -250,8 +250,8 @@ const truncateNumber = (result) => {
     } else {
       const integer = result.slice(0, decimalIndex);
       const decimal = result.slice(decimalIndex + 1);
-      const truncatedInteger = integer.slice(0, maxNum - decimal.length);
-      const roundDecimal = roundNumber(parseFloat(`0.${decimal}`), 6);
+      const truncatedInteger = integer.slice(0, maxNum - decimal.length + 2);
+      const roundDecimal = roundNumber(parseFloat(`0.${decimal}`), 5);
       truncatedNum = `${truncatedInteger}.${roundDecimal.toString().slice(2)}`;
     }
 
