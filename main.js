@@ -63,7 +63,7 @@ const updateOperator = (e) => {
     firstNumber = "";
     operator = "";
   } else {
-    firstNumber = roundNumber(firstNumber, 13);
+    firstNumber = truncateNumber(firstNumber);
     updateDisplay(firstNumber);
   }
 
@@ -104,7 +104,7 @@ const equalsClicked = () => {
 
   if (firstNumber !== "" && currentInput !== "" && operator !== "") {
     secondNumber = currentInput;
-    firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    firstNumber = doCalculation(firstNumber, secondNumber, operator).toString();
     calculator.result = true;
     operator = "";
   } else {
@@ -118,7 +118,7 @@ const equalsClicked = () => {
     firstNumber = "";
     operator = "";
   } else if (currentInput !== "") {
-    firstNumber = roundNumber(firstNumber, 13);
+    firstNumber = truncateNumber(firstNumber);
     updateDisplay(firstNumber);
     currentInput = "";
   }
@@ -135,7 +135,7 @@ const updateCurrentInput = (e) => {
 
   backgroundColorChanger("#333333", e.target);
 
-  if (display.textContent.length === 15) {
+  if (currentInput.length === 15) {
     return;
   }
 
@@ -231,6 +231,34 @@ const updateDisplay = (num) => {
 const roundNumber = (num, points) => {
   const factor = Math.pow(10, points);
   return Math.round(num * factor) / factor;
+};
+
+const truncateNumber = (result) => {
+  const maxNum = 15;
+  const number = parseFloat(result)
+
+  if (Math.abs(number) >= 1e+21 || Math.abs(number) < 1e-7) {
+    return number.toExponential(9);
+  }
+
+  if (result.length > maxNum) {
+    const decimalIndex = result.indexOf(".");
+    let truncatedNum;
+
+    if (decimalIndex === -1) {
+      truncatedNum = result.slice(0, maxNum);
+    } else {
+      const integer = result.slice(0, decimalIndex);
+      const decimal = result.slice(decimalIndex + 1);
+      const truncatedInteger = integer.slice(0, maxNum - decimal.length);
+      const roundDecimal = roundNumber(parseFloat(`0.${decimal}`), 6);
+      truncatedNum = `${truncatedInteger}.${roundDecimal.toString().slice(2)}`;
+    }
+
+    return Number(truncatedNum);
+  }
+
+  return result;
 };
 
 const backgroundColorChanger = (color, button) => {
