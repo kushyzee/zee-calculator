@@ -53,7 +53,7 @@ const updateOperator = (e) => {
     firstNumber = currentInput;
   } else if (secondNumber === "") {
     secondNumber = currentInput;
-    firstNumber = doCalculation(firstNumber, secondNumber, operator);
+    firstNumber = doCalculation(firstNumber, secondNumber, operator).toString();
   }
 
   operator = e.target.id;
